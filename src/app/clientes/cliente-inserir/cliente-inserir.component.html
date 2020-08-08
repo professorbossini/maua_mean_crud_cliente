@@ -1,0 +1,15 @@
+<mat-card>
+  <mat-form-field>
+    <input matInput type="text" placeholder="Nome" [(ngModel)]="nome" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" placeholder="Fone" [(ngModel)]="fone" />
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="text" placeholder="Email" [(ngModel)]="email" />
+  </mat-form-field>
+  <button color="accent" mat-raised-button (click)="onAdicionarCliente()">
+    Inserir Cliente
+  </button>
+</mat-card>
