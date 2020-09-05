@@ -1,8 +1,15 @@
 const express = require (`express`);
 const app = express();
 const bodyParser = require ('body-parser');
+const Cliente = require ('./models/cliente');
+const mongoose = require ('mongoose');
 app.use(bodyParser.json());
-const clientes = [
+
+mongoose.connect("mongodb+srv://user_maua:senha_maua@cluster0.ssm0w.mongodb.net/maua-clientes?retryWrites=true&w=majority")
+.then(() => console.log ("Conexão OK"))
+.catch(() => console.log ("Conexão NOK"));
+
+/*const clientes = [
   {
     id: '1',
     nome: 'José',
@@ -21,7 +28,7 @@ const clientes = [
     fone: '44556677',
     email: 'joao@email.com'
   }
-]
+]*/
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -30,15 +37,21 @@ app.use((req, res, next) => {
 })
 
 app.post ('/api/clientes', (req, res, next) => {
-  const cliente = req.body;
-  console.log(cliente);
+  const cliente = new Cliente({
+    nome: req.body.nome,
+    fone: req.body.fone,
+    email: req.body.email
+  });
+  cliente.save();
   res.status(201).json({mensagem: 'Cliente inserido'})
 });
 
-app.use('/api/clientes', (req, res, next) => {
-  res.status(200).json({
-    mensagem: 'Tudo OK',
-    clientes: clientes
+app.get('/api/clientes', (req, res, next) => {
+  Cliente.find().then((documents) => {
+    res.status(200).json({
+      mensagem: 'Tudo OK',
+      clientes: documents
+    });
   });
 });
 
