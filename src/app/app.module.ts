@@ -14,6 +14,8 @@ import { CabecalhoComponent } from './cabecalho/cabecalho.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 
+import { AppRoutingModule } from './app-routing.module';
+
 import { ClienteListaComponent } from './clientes/cliente-lista/cliente-lista.component';
 
 @NgModule({
@@ -25,6 +27,7 @@ import { ClienteListaComponent } from './clientes/cliente-lista/cliente-lista.co
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
     MatInputModule,
