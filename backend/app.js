@@ -5,7 +5,9 @@ const bodyParser = require ('body-parser');
 const mongoose = require ('mongoose');
 const clienteRoutes = require ('./rotas/clientes');
 app.use(bodyParser.json());
+
 app.use('/imagens', express.static(path.join('backend/imagens')));
+
 mongoose.connect("mongodb+srv://user_maua:senha_maua@cluster0.ssm0w.mongodb.net/maua-clientes?retryWrites=true&w=majority")
 .then(() => console.log ("Conexão OK"))
 .catch(() => console.log ("Conexão NOK"));

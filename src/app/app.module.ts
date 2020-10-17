@@ -15,6 +15,7 @@ import { CabecalhoComponent } from './cabecalho/cabecalho.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -38,6 +39,7 @@ import { ClienteListaComponent } from './clientes/cliente-lista/cliente-lista.co
     MatButtonModule,
     MatToolbarModule,
     MatExpansionModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
     HttpClientModule,
   ],
