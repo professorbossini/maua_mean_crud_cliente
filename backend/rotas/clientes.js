@@ -53,23 +53,29 @@ router.get('', (req, res, next) => {
   const pageSize = +req.query.pagesize;
   const page = +req.query.page;
   const consulta = Cliente.find();
+  let clientesEncontrados;
   if (pageSize && page){
     consulta.
     skip(pageSize * (page - 1)).
     limit (pageSize)
   }
-  consulta.then((documents) => {
-    //console.log('Documents: ', documents)
+  consulta
+  .then((documents) => {
+    clientesEncontrados = documents;
+    return Cliente.count();
+  })
+  .then((count) => {
     res.status(200).json({
-      mensagem: 'Tudo OK',
-      clientes: documents
-    });
+      mensagem: "Tudo Ok",
+      clientes: clientesEncontrados,
+      maxClientes: count
+    })
   });
 });
 
 //DELETE /api/cliente/123456
 router.delete('/:id', (req, res, next) => {
-  Cliente.deleteOne({ _id: req.params.id, nome: "Ana" })
+  Cliente.deleteOne({ _id: req.params.id})
     .then((resultado) => {
       //console.log(resultado);
       res.status(200).json({ mensagem: "Cliente removido" })

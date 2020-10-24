@@ -15,7 +15,7 @@ export class ClienteListaComponent implements OnInit, OnDestroy {
   clientes: Cliente[] = [];
   private clientesSubscription: Subscription;
   public estaCarregando: boolean = false;
-  public totalDeClientes: number = 10;
+  public totalDeClientes: number = 0;
   public totalDeClientesPorPagina: number = 2;
   public paginaAtual: number = 1;
   public opcoesTotalDeClientesPorPagina: number[] = [2, 5, 10];
@@ -25,14 +25,18 @@ export class ClienteListaComponent implements OnInit, OnDestroy {
     this.clienteService.getClientes(this.totalDeClientesPorPagina, this.paginaAtual);
     this.clientesSubscription = this.clienteService
       .getListaDeClientesAtualizadaObservable()
-      .subscribe((clientes: Cliente[]) => {
+      .subscribe((dados: {clientes: [], maxClientes: number}) => {
         this.estaCarregando = false;
-        this.clientes = clientes;
-      });
+        this.clientes = dados.clientes;
+        this.totalDeClientes = dados.maxClientes
+      })
   }
 
   onDelete (id: string): void {
-    this.clienteService.removerCliente(id);
+    this.estaCarregando = true;
+    this.clienteService.removerCliente(id).subscribe(() => {
+      this.clienteService.getClientes (this.totalDeClientesPorPagina, this.paginaAtual);
+    });
   }
 
   onPaginaAlterada (dadosPagina: PageEvent){

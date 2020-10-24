@@ -4,11 +4,12 @@ const app = express();
 const bodyParser = require ('body-parser');
 const mongoose = require ('mongoose');
 const clienteRoutes = require ('./rotas/clientes');
+const usuarioRoutes = require ('./rotas/usuarios');
 app.use(bodyParser.json());
 
 app.use('/imagens', express.static(path.join('backend/imagens')));
 
-mongoose.connect("mongodb+srv://user_maua:senha_maua@cluster0.ssm0w.mongodb.net/maua-clientes?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://user_maua:senha_maua@cluster0.ssm0w.mongodb.net/maua-clientes?retryWrites=true&w=majority&connectTimeoutMS=1000")
 .then(() => console.log ("Conexão OK"))
 .catch(() => console.log ("Conexão NOK"));
 
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 })
 
 app.use ('/api/clientes', clienteRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 
 
 
