@@ -2,8 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 //import { FormsModule } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { AuthInterceptor } from './auth/auth-interceptor';
 import { AppComponent } from './app.component';
 import { ClienteInserirComponent } from './clientes/cliente-inserir/cliente-inserir.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -47,7 +48,7 @@ import { SignupComponent } from './auth/signup/signup.component';
     MatProgressSpinnerModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

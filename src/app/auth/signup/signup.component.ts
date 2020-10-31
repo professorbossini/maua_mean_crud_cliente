@@ -10,6 +10,7 @@ import { UsuarioService } from '../usuario.service';
 export class SignupComponent implements OnInit {
 
   estaCarregando: boolean = false;
+  tipoUsuario: string;
 
   onSignup(form: NgForm){
     if (form.invalid) return;

@@ -7,7 +7,7 @@
     </div>
     <p>Fone: {{ cliente.fone }}</p>
     <p>Email: {{ cliente.email }}</p>
-    <mat-action-row>
+    <mat-action-row *ngIf="autenticado">
       <a mat-button color="indigo" [routerLink]="['/editar', cliente.id]" >EDITAR</a>
       <button mat-button color="warn" (click)="onDelete(cliente.id)">REMOVER</button>
     </mat-action-row>

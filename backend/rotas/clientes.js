@@ -2,6 +2,7 @@ const express = require ('express');
 const multer = require('multer');
 const router = express.Router();
 const Cliente = require('../models/cliente');
+const checkAuth = require ('../middleware/check-auth');
 
 const MIME_TYPE_EXTENSAO_MAPA = {
   'image/png': 'png',
@@ -24,7 +25,7 @@ const armazenamento = multer.diskStorage({
 })
 
 
-router.post('', multer({storage: armazenamento}).single('imagem'), (req, res, next) => {
+router.post('', checkAuth, multer({storage: armazenamento}).single('imagem'), (req, res, next) => {
   //http://www.endereco.com.br/imagens/foto.png
   const imagemURL = `${req.protocol}://${req.get('host')}`;
   const cliente = new Cliente({
@@ -74,7 +75,7 @@ router.get('', (req, res, next) => {
 });
 
 //DELETE /api/cliente/123456
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
   Cliente.deleteOne({ _id: req.params.id})
     .then((resultado) => {
       //console.log(resultado);
@@ -82,7 +83,7 @@ router.delete('/:id', (req, res, next) => {
     })
 })
 
-router.put('/:id',multer({ storage: armazenamento }).single('imagem') , (req, res, next) => {
+router.put('/:id', checkAuth, multer({ storage: armazenamento }).single('imagem') , (req, res, next) => {
   //console.log (req.file);
   let imagemURL = req.body.imagemURL;
   if (req.file){
