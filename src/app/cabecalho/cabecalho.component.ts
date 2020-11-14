@@ -16,6 +16,7 @@ export class CabecalhoComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.autenticado = this.usuarioService.isAutenticado();
     this.authObserver = this.usuarioService.getStatusSubject().subscribe((autenticado) => {
       this.autenticado = autenticado;
     })
@@ -23,6 +24,10 @@ export class CabecalhoComponent implements OnInit, OnDestroy {
 
   ngOnDestroy (){
     this.authObserver.unsubscribe();
+  }
+
+  onLogout (){
+    this.usuarioService.logout();
   }
 
 }

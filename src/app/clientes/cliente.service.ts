@@ -25,7 +25,8 @@ export class ClienteService {
             nome: cliente.nome,
             fone: cliente.fone,
             email: cliente.email,
-            imagemURL: cliente.imagemURL
+            imagemURL: cliente.imagemURL,
+            criador: cliente.criador
           }
         }),
         maxClientes: dados.maxClientes
@@ -33,6 +34,7 @@ export class ClienteService {
     })).
     subscribe(
       (dados) => {
+        console.log(dados);
         this.clientes = dados.clientes;
         this.listaClientesAtualizada.next({clientes: [...this.clientes], maxClientes:dados.maxClientes });
       }

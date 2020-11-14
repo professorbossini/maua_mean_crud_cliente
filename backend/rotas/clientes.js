@@ -32,8 +32,11 @@ router.post('', checkAuth, multer({storage: armazenamento}).single('imagem'), (r
     nome: req.body.nome,
     fone: req.body.fone,
     email: req.body.email,
-    imagemURL: `${imagemURL}/imagens/${req.file.filename}`
+    imagemURL: `${imagemURL}/imagens/${req.file.filename}`,
+    criador: req.dadosUsuario.id
   });
+  //console.log (req.dadosUsuario);
+  //res.status(200).json({});
   cliente.save().then((clienteInserido) => {
     res.status(201).json({
       mensagem: 'Cliente inserido',
