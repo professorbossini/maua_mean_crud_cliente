@@ -50,6 +50,11 @@ router.post('', checkAuth, multer({storage: armazenamento}).single('imagem'), (r
       }
     })
   })
+  .catch( erro => {
+    res.status(500).json({
+      mensagem: "Inserção falhou. Tente novamente mais tarde."
+    })
+  })
 });
 
 router.get('', (req, res, next) => {
@@ -74,15 +79,29 @@ router.get('', (req, res, next) => {
       clientes: clientesEncontrados,
       maxClientes: count
     })
-  });
+  })
+  .catch(erro => {
+    res.status(500).json({
+      mensagem: "Busca por clientes falhou. Tente novamente mais tarde."
+    })
+  })
 });
 
 //DELETE /api/cliente/123456
 router.delete('/:id', checkAuth, (req, res, next) => {
-  Cliente.deleteOne({ _id: req.params.id})
+  Cliente.deleteOne({ _id: req.params.id, criador: req.dadosUsuario.id})
     .then((resultado) => {
-      //console.log(resultado);
-      res.status(200).json({ mensagem: "Cliente removido" })
+      if (resultado.n > 0){
+        res.status(200).json({ mensagem: "Cliente removido" })
+      }
+      else{
+        res.status(401).json({mensagem: "Remoção não autorizada"})
+      }
+    })
+    .catch(erro => {
+      res.status(500).json({
+        mensagem: "Remoção falhou. Tente novamente mais tarde."
+      })
     })
 })
 
@@ -98,12 +117,23 @@ router.put('/:id', checkAuth, multer({ storage: armazenamento }).single('imagem'
     nome: req.body.nome,
     fone: req.body.fone,
     email: req.body.email,
-    imagemURL: imagemURL
+    imagemURL: imagemURL,
+    criador: req.dadosUsuario.id
   })
-  Cliente.updateOne({ _id: req.params.id }, cliente)
+  Cliente.updateOne({ _id: req.params.id, criador: req.dadosUsuario.id }, cliente)
     .then((resultado) => {
-      //console.log(resultado)
-      res.status(200).json({ mensagem: "Atualização realizada com sucesso" });
+      console.log(resultado)
+      if (resultado.nModified > 0){
+        res.status(200).json({ mensagem: "Atualização realizada com sucesso" });
+      }
+      else{
+        res.status(401).json({mensagem: "Atualização não permitida"})
+      }
+    })
+    .catch(erro => {
+      res.status(500).json({
+        mensagem: "Atualização falhou. Tente novamente mais tarde."
+      })
     })
 
 });
@@ -115,6 +145,11 @@ router.get('/:id', (req, res, next) => {
         res.status(200).json(cli)
       else
         res.status(404).json({ mensagem: "Cliente não encontrado!" })
+    })
+    .catch(erro => {
+      res.status(500).json({
+        mensagem: "Busca por cliente falhou. Tente novamente mais tarde."
+      })
     })
 });
 

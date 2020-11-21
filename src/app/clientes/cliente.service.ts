@@ -48,7 +48,7 @@ export class ClienteService {
 
   getCliente (idCliente: string){
     return this.httpClient.get<{
-      _id: string, nome: string, fone: string, email: string, imagemURL: string
+      _id: string, nome: string, fone: string, email: string, imagemURL: string, criador: string
     }>(`http://localhost:3000/api/clientes/${idCliente}`);
     /*let cli = this.clientes.find((cli) => cli.id === idCliente);
     return {...cli};*/
@@ -70,7 +70,8 @@ export class ClienteService {
         nome: nome,
         fone: fone,
         email: email,
-        imagemURL: imagem
+        imagemURL: imagem,
+        criador: null
       }
     }
     /*const cliente = {

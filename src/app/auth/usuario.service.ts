@@ -14,6 +14,7 @@ export class UsuarioService {
   private autenticado: boolean = false;
   private authStatusSubject = new Subject<boolean>();
   private tokenTimer: NodeJS.Timer;
+  private idUsuario: string;
 
   constructor(
     private httpClient: HttpClient,
@@ -34,14 +35,19 @@ export class UsuarioService {
     return this.token;
   }
 
+  public getIdUsuario (): string{
+    return this.idUsuario;
+  }
+
   criarUsuario(email: string, password: string) {
     const authData: AuthData = {
       email: email,
       password: password
     }
     this.httpClient.post("http://localhost:3000/api/usuarios/signup", authData)
-      .subscribe((resposta) => {
-        console.log(resposta);
+      .subscribe({
+        next: () => this.router.navigate(['/']),
+        error: () => this.authStatusSubject.next(false)
       })
   }
 
@@ -50,7 +56,7 @@ export class UsuarioService {
       email: email,
       password: senha
     }
-    this.httpClient.post<{ token: string, expiresIn: number }>('http://localhost:3000/api/usuarios/login', authData).subscribe(resposta => {
+    this.httpClient.post<{ token: string, expiresIn: number, idUsuario: string }>('http://localhost:3000/api/usuarios/login', authData).subscribe(resposta => {
       this.token = resposta.token;
       if (this.token){
         const tempoValidadeToken = resposta.expiresIn;
@@ -58,8 +64,13 @@ export class UsuarioService {
           this.logout()
         }, tempoValidadeToken * 1000);
         this.autenticado = true;
+        this.idUsuario = resposta.idUsuario;
         this.authStatusSubject.next(true);
-        this.salvarDadosAutenticacao(this.token, new Date( new Date().getTime() + tempoValidadeToken * 1000));
+        this.salvarDadosAutenticacao(
+                    this.token,
+                    new Date( new Date().getTime() + tempoValidadeToken * 1000),
+                    this.idUsuario
+        );
         console.log(resposta);
         this.router.navigate(['/']);
       }
@@ -71,24 +82,28 @@ export class UsuarioService {
     this.autenticado = false;
     this.authStatusSubject.next(false)
     clearTimeout(this.tokenTimer);
+    this.idUsuario = null;
     this.removerDadosDeAutenticacao();
     this.router.navigate(['/'])
   }
 
-  private salvarDadosAutenticacao (token: string, validade: Date){
+  private salvarDadosAutenticacao (token: string, validade: Date, idUsuario: string){
     localStorage.setItem ('token', token);
     localStorage.setItem('validade',validade.toISOString());
+    localStorage.setItem('idUsuario', idUsuario);
   }
 
   private removerDadosDeAutenticacao (){
     localStorage.removeItem('token');
     localStorage.removeItem('validade');
+    localStorage.removeItem('idUsuario');
   }
 
   private obterDadosDeAutenticacao (){
     const token = localStorage.getItem('token');
     const validade = localStorage.getItem('validade');
-    return (token && validade) ? {token: token, validade: new Date(validade)}: null;
+    const idUsuario = localStorage.getItem('idUsuario');
+    return (token && validade) ? {token: token, validade: new Date(validade), idUsuario: idUsuario}: null;
   }
 
   autenticarAutomaticamente (){
@@ -99,6 +114,7 @@ export class UsuarioService {
       if (diferenca > 0){
         this.token = dadosAutenticacao.token;
         this.autenticado = true;
+        this.idUsuario = dadosAutenticacao.idUsuario;
         this.authStatusSubject.next(true);
         this.tokenTimer = setTimeout(() => {
           this.logout()

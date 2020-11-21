@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
   }
   catch (err){
     res.status(401).json({
-      mensagem: "Autenticação falhou"
+      mensagem: "Autenticação não autorizada."
     })
   }
 }

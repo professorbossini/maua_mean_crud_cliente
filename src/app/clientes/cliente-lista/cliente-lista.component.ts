@@ -11,6 +11,7 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./cliente-lista.component.css'],
 })
 export class ClienteListaComponent implements OnInit, OnDestroy {
+
   constructor(
     private clienteService: ClienteService,
     private usuarioService: UsuarioService
@@ -24,11 +25,13 @@ export class ClienteListaComponent implements OnInit, OnDestroy {
   public paginaAtual: number = 1;
   public opcoesTotalDeClientesPorPagina: number[] = [2, 5, 10];
   public autenticado: boolean = false;
+  public idUsuario: string;
   private authObserver: Subscription;
 
   ngOnInit(): void {
     this.estaCarregando = true;
     this.clienteService.getClientes(this.totalDeClientesPorPagina, this.paginaAtual);
+    this.idUsuario = this.usuarioService.getIdUsuario();
     this.clientesSubscription = this.clienteService
       .getListaDeClientesAtualizadaObservable()
       .subscribe((dados: { clientes: [], maxClientes: number }) => {

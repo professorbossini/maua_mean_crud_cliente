@@ -28,11 +28,11 @@ router.post ('/login', (req, res, next) => {
       'minhasenha',
       {expiresIn: '1h'}
     )
-    res.status(200).json({token: token, expiresIn: 3600});
+    res.status(200).json({token: token, expiresIn: 3600, idUsuario:user._id});
   })
   .catch (err => {
     return res.status(401).json({
-      mensagem: "Login falhou: " + err
+      mensagem: "Erro no login. Tente novamente mais tarde."
     })
   })
 });
@@ -51,8 +51,8 @@ router.post ('/signup', (req, res, next) => {
       res.status(200).json({ mensagem: "Tudo ok", hash: hash });
     })
     .catch ((err) => {
-      console.log ("Chegou no catch")
-      res.status(500).json({mensagem: "Falhou", erro: JSON.stringify(err)})
+      //console.log ("Chegou no catch")
+      res.status(500).json({mensagem: "Erro com as credenciais.", erro: JSON.stringify(err)})
     });
   })
 
